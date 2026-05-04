@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from './entities/user/user.entity';
+import { User } from '../entities/user/user.entity';
 import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()

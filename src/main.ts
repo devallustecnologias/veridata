@@ -8,8 +8,8 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Kratka API')
-    .setDescription('The Kratka API description')
+    .setTitle('Saas Consulta API')
+    .setDescription('The Saas Consulta API description')
     .setVersion('0.1')
     .addBearerAuth()
     .build();

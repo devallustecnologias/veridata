@@ -1,0 +1,49 @@
+// src/user/entities/user.entity.ts
+
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { Company } from 'src/company/company.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+
+export enum UserRole {
+  MASTER = 'master',
+  EMPRESA = 'empresa',
+  OPERADOR = 'operador',
+}
+
+@Entity()
+export class User {
+  @ApiProperty()
+  @PrimaryColumn()
+  uid!: string;
+
+  @ApiProperty()
+  @Column()
+  username!: string;
+
+  @ApiProperty()
+  @Column({ unique: true })
+  email!: string;
+
+  @ApiProperty()
+  @Column()
+  @Exclude()
+  password!: string;
+
+  @ApiProperty({ enum: UserRole })
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.OPERADOR,
+  })
+  role!: UserRole;
+
+  @ManyToOne(() => Company, company => company.users, { nullable: true })
+  @JoinColumn({ name: 'company_id' })
+  company?: Company;
+
+
+  @ApiProperty()
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
+}

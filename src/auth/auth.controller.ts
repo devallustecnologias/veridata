@@ -2,13 +2,8 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Q
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { User } from './entities/user/user.entity';
-class GoogleLoginDto {
-  /**
-   * @example "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE2..."
-   */
-  credential: string;
-}
+import { User } from '../entities/user/user.entity';
+
 
 
 @Controller("auth")
@@ -25,30 +20,38 @@ export class AuthController {
   @ApiBody({
     description: "Payload containing user information for registration.",
     schema: {
-      example: {
-        username: "Lucas",
-        email: "lucas@email.com",
-        password: "password123",
+      type: "object",
+      properties: {
+        username: { type: "string", example: "Lucas" },
+        email: { type: "string", example: "lucas@email.com" },
+        password: { type: "string", example: "password123" },
+        role: {
+          type: "string",
+          enum: ["master", "empresa", "operador"],
+          example: "operador"
+        }
       }
     }
   })
   @Post('register')
   async register(
-    @Body() data: { username: string; email: string; password: string}
+    @Body() data: { username: string; email: string; password: string }
   ): Promise<User> {
     try {
       return await this.authService.register(data);
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException("User already exists");
     }
   }
 
   @ApiOperation({ summary: 'Login' })
-  @ApiResponse({ status: 200, description: 'User logged in successfully', schema: {
+  @ApiResponse({
+    status: 200, description: 'User logged in successfully', schema: {
       example: {
         "access_token": "string"
       }
-    } })
+    }
+  })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiBody({
@@ -67,7 +70,7 @@ export class AuthController {
     try {
       return await this.authService.login(data.email, data.password);
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException("Invalid credentials");
     }
   }
 
@@ -79,11 +82,5 @@ export class AuthController {
   @Get('me')
   me(@Req() req: any): User {
     return req.user;
-  }
-
-    @Post('google')
-  @ApiBody({ type: GoogleLoginDto })
-  googleLogin(@Body('credential') credential: string) {
-    return this.authService.googleLogin(credential);
   }
 }
