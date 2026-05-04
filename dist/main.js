@@ -8,14 +8,14 @@ async function bootstrap() {
         cors: true,
     });
     const config = new swagger_1.DocumentBuilder()
-        .setTitle('Saas Consulta API')
-        .setDescription('The Saas Consulta API description')
+        .setTitle('Veridata API')
+        .setDescription('The Veridata API description')
         .setVersion('0.1')
         .addBearerAuth()
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(process.env.PORT ?? 8007);
     console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
