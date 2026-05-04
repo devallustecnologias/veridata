@@ -8,8 +8,8 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Saas Consulta API')
-    .setDescription('The Saas Consulta API description')
+    .setTitle('Veridata API')
+    .setDescription('The Veridata API description')
     .setVersion('0.1')
     .addBearerAuth()
     .build();
