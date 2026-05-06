@@ -14,4 +14,8 @@ export class Permission {
   @ApiProperty()
   @Column()
   name!: string;
+
+  @ApiProperty()
+  @Column({ type: 'int', default: 0 })
+  creditCost!: number; 
 }

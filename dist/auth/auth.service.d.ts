@@ -4,7 +4,6 @@ import { User } from '../entities/user/user.entity';
 export declare class AuthService {
     private jwtService;
     private userRepository;
-    private googleClient;
     constructor(jwtService: JwtService, userRepository: Repository<User>);
     register(data: {
         username: string;
@@ -15,9 +14,5 @@ export declare class AuthService {
     }): Promise<any>;
     login(email: string, password: string): Promise<{
         accessToken: string;
-    }>;
-    googleLogin(credential: string): Promise<{
-        access_token: string;
-        uid: string;
     }>;
 }

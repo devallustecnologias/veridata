@@ -15,6 +15,7 @@ class CreateCompanyDto {
     name;
     domain;
     logoUrl;
+    planId;
 }
 exports.CreateCompanyDto = CreateCompanyDto;
 __decorate([
@@ -35,4 +36,12 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "logoUrl", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 1,
+        required: false,
+        description: 'ID do plano da empresa',
+    }),
+    __metadata("design:type", Number)
+], CreateCompanyDto.prototype, "planId", void 0);
 //# sourceMappingURL=create-company.dto.js.map

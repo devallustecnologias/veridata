@@ -7,7 +7,7 @@ import { Plan } from './plan.entity';
 
 @Controller()
 export class PlanController {
-     constructor(private readonly planService: PlanService) {}
+  constructor(private readonly planService: PlanService) { }
 
   @Get()
   @ApiOperation({ summary: 'Listar planos' })
@@ -89,5 +89,18 @@ export class PlanController {
   })
   remove(@Param('id') id: number) {
     return this.planService.remove(Number(id));
+  }
+
+  @Post(':planId/assign/:userId')
+  @ApiOperation({ summary: 'Atribuir plano a um usuário' })
+  @ApiResponse({
+    status: 200,
+    description: 'Plano atribuído com sucesso',
+  })
+  assignPlanToUser(
+    @Param('userId') userId: string,
+    @Param('planId') planId: number,
+  ) {
+    return this.planService.assignPlanToUser(userId, Number(planId));
   }
 }

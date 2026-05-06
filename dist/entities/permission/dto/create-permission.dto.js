@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 class CreatePermissionDto {
     key;
     name;
+    creditCost;
 }
 exports.CreatePermissionDto = CreatePermissionDto;
 __decorate([
@@ -29,4 +30,13 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], CreatePermissionDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 5,
+        description: 'Quantidade de créditos consumidos ao usar essa permissão',
+        required: false,
+        default: 0,
+    }),
+    __metadata("design:type", Number)
+], CreatePermissionDto.prototype, "creditCost", void 0);
 //# sourceMappingURL=create-permission.dto.js.map

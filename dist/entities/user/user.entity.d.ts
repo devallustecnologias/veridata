@@ -1,4 +1,5 @@
 import { Company } from 'src/company/company.entity';
+import { Plan } from '../plan/plan.entity';
 export declare enum UserRole {
     MASTER = "master",
     EMPRESA = "empresa",
@@ -10,6 +11,7 @@ export declare class User {
     email: string;
     password: string;
     role: UserRole;
-    company?: Company;
+    company?: Company | null;
+    plan?: Plan | null;
     createdAt: Date;
 }

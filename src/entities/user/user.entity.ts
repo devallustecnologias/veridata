@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Company } from 'src/company/company.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Plan } from '../plan/plan.entity';
 
 export enum UserRole {
   MASTER = 'master',
@@ -40,8 +41,11 @@ export class User {
 
   @ManyToOne(() => Company, company => company.users, { nullable: true })
   @JoinColumn({ name: 'company_id' })
-  company?: Company;
+  company?: Company | null;
 
+  @ManyToOne(() => Plan, { nullable: true })
+  @JoinColumn({ name: 'plan_id' })
+  plan?: Plan | null;
 
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamp' })

@@ -38,6 +38,9 @@ let PlanController = class PlanController {
     remove(id) {
         return this.planService.remove(Number(id));
     }
+    assignPlanToUser(userId, planId) {
+        return this.planService.assignPlanToUser(userId, Number(planId));
+    }
 };
 exports.PlanController = PlanController;
 __decorate([
@@ -129,6 +132,19 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], PlanController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)(':planId/assign/:userId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Atribuir plano a um usuário' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Plano atribuído com sucesso',
+    }),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('planId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", void 0)
+], PlanController.prototype, "assignPlanToUser", null);
 exports.PlanController = PlanController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [plan_service_1.PlanService])

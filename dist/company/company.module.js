@@ -12,12 +12,13 @@ const company_controller_1 = require("./company.controller");
 const company_service_1 = require("./company.service");
 const common_1 = require("@nestjs/common");
 const company_entity_1 = require("./company.entity");
+const plan_entity_1 = require("../entities/plan/plan.entity");
 let CompanyModule = class CompanyModule {
 };
 exports.CompanyModule = CompanyModule;
 exports.CompanyModule = CompanyModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([company_entity_1.Company]),],
+        imports: [typeorm_1.TypeOrmModule.forFeature([company_entity_1.Company, plan_entity_1.Plan]),],
         controllers: [
             company_controller_1.CompanyController,
         ],

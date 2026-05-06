@@ -8,24 +8,27 @@ import { Company } from './company.entity';
 import { Repository } from 'typeorm';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { Plan } from 'src/entities/plan/plan.entity';
 
 @Injectable()
 export class CompanyService {
   constructor(
     @InjectRepository(Company)
     private readonly companyRepo: Repository<Company>,
+    @InjectRepository(Plan)
+    private readonly planRepo: Repository<Plan>,
   ) {}
 
   async findAll(): Promise<Company[]> {
     return this.companyRepo.find({
-      relations: ['users'], // opcional
+      relations: ['users', 'plan'], // opcional
     });
   }
 
   async findOne(id: number): Promise<Company> {
     const company = await this.companyRepo.findOne({
       where: { id },
-      relations: ['users'],
+      relations: ['users', 'plan'],
     });
 
     if (!company) {
@@ -35,18 +38,26 @@ export class CompanyService {
     return company;
   }
 
-  async create(dto: CreateCompanyDto): Promise<Company> {
-    const exists = await this.companyRepo.findOne({
-      where: { domain: dto.domain },
-    });
+async create(dto: CreateCompanyDto): Promise<Company> {
+  const exists = await this.companyRepo.findOne({
+    where: { domain: dto.domain },
+  });
 
-    if (exists) {
-      throw new BadRequestException('Domínio já está em uso');
-    }
-
-    const company = this.companyRepo.create(dto);
-    return this.companyRepo.save(company);
+  if (exists) {
+    throw new BadRequestException('Domínio já está em uso');
   }
+
+  const plan = dto.planId
+    ? await this.planRepo.findOne({ where: { id: dto.planId } })
+    : null;
+
+  const company = this.companyRepo.create({
+    ...dto,
+    plan,
+  });
+
+  return this.companyRepo.save(company);
+}
 
   async update(id: number, dto: UpdateCompanyDto): Promise<Company> {
     const company = await this.findOne(id);
@@ -77,4 +88,20 @@ export class CompanyService {
 
     await this.companyRepo.remove(company);
   }
+  async getPermissions(companyId: number) {
+  const company = await this.companyRepo.findOne({
+    where: { id: companyId },
+    relations: {
+      plan: {
+        permissions: true,
+      },
+    },
+  });
+
+  if (!company) {
+    throw new NotFoundException('Empresa não encontrada');
+  }
+
+  return company.plan?.permissions ?? [];
+}
 }

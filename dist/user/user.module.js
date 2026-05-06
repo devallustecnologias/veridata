@@ -14,12 +14,13 @@ const common_1 = require("@nestjs/common");
 const user_entity_1 = require("../entities/user/user.entity");
 const plan_entity_1 = require("../entities/plan/plan.entity");
 const permission_entity_1 = require("../entities/permission/permission.entity");
+const company_entity_1 = require("../company/company.entity");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, plan_entity_1.Plan, permission_entity_1.Permission]),],
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, plan_entity_1.Plan, permission_entity_1.Permission, company_entity_1.Company]),],
         controllers: [
             user_controller_1.UserController,
         ],

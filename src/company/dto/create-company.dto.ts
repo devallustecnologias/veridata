@@ -15,4 +15,11 @@ export class CreateCompanyDto {
     required: false,
   })
   logoUrl?: string;
+
+   @ApiProperty({
+    example: 1,
+    required: false,
+    description: 'ID do plano da empresa',
+  })
+  planId?: number;
 }

@@ -18,12 +18,15 @@ const typeorm_1 = require("@nestjs/typeorm");
 const plan_entity_1 = require("./plan.entity");
 const typeorm_2 = require("typeorm");
 const permission_entity_1 = require("../permission/permission.entity");
+const user_entity_1 = require("../user/user.entity");
 let PlanService = class PlanService {
     planRepo;
     permissionRepo;
-    constructor(planRepo, permissionRepo) {
+    userRepo;
+    constructor(planRepo, permissionRepo, userRepo) {
         this.planRepo = planRepo;
         this.permissionRepo = permissionRepo;
+        this.userRepo = userRepo;
     }
     async findAll() {
         return this.planRepo.find();
@@ -37,7 +40,9 @@ let PlanService = class PlanService {
     }
     async create(dto) {
         const permissions = await this.permissionRepo.find({
-            where: dto.permissionIds.map((id) => ({ id })),
+            where: {
+                id: (0, typeorm_2.In)(dto.permissionIds),
+            },
         });
         if (permissions.length !== dto.permissionIds.length) {
             throw new common_1.BadRequestException('Permissões inválidas');
@@ -71,13 +76,32 @@ let PlanService = class PlanService {
         }
         await this.planRepo.remove(plan);
     }
+    async assignPlanToUser(userId, planId) {
+        const user = await this.userRepo.findOne({
+            where: { uid: userId },
+            relations: ['plan'],
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('Usuário não encontrado');
+        }
+        const plan = await this.planRepo.findOne({
+            where: { id: planId },
+        });
+        if (!plan) {
+            throw new common_1.NotFoundException('Plano não encontrado');
+        }
+        user.plan = plan;
+        await this.userRepo.save(user);
+    }
 };
 exports.PlanService = PlanService;
 exports.PlanService = PlanService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(plan_entity_1.Plan)),
     __param(1, (0, typeorm_1.InjectRepository)(permission_entity_1.Permission)),
+    __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], PlanService);
 //# sourceMappingURL=plan.service.js.map

@@ -38,6 +38,9 @@ let CompanyController = class CompanyController {
     remove(id) {
         return this.companyService.remove(Number(id));
     }
+    getCompanyPermissions(id) {
+        return this.companyService.getPermissions(Number(id));
+    }
 };
 exports.CompanyController = CompanyController;
 __decorate([
@@ -108,6 +111,18 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)(':id/permissions'),
+    (0, swagger_1.ApiOperation)({ summary: 'Listar permissões da empresa' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Permissões da empresa',
+    }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], CompanyController.prototype, "getCompanyPermissions", null);
 exports.CompanyController = CompanyController = __decorate([
     (0, swagger_1.ApiTags)('Companies'),
     (0, common_1.Controller)('companies'),

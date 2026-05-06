@@ -12,4 +12,11 @@ export class UpdateCompanyDto {
     required: false,
   })
   logoUrl?: string;
+
+  @ApiProperty({
+    example: 2,
+    required: false,
+    description: 'ID do plano da empresa',
+  })
+  planId?: number;
 }

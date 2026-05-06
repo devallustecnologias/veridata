@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Plan } from './plan.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Permission } from '../permission/permission.entity';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class PlanService {
@@ -14,7 +15,10 @@ export class PlanService {
 
     @InjectRepository(Permission)
     private readonly permissionRepo: Repository<Permission>,
-  ) {}
+
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+  ) { }
 
   async findAll(): Promise<Plan[]> {
     return this.planRepo.find();
@@ -30,23 +34,25 @@ export class PlanService {
     return plan;
   }
 
-  async create(dto: CreatePlanDto): Promise<Plan> {
-    const permissions = await this.permissionRepo.find({
-      where: dto.permissionIds.map((id) => ({ id })),
-    });
+async create(dto: CreatePlanDto): Promise<Plan> {
+  const permissions = await this.permissionRepo.find({
+    where: {
+      id: In(dto.permissionIds),
+    },
+  });
 
-    if (permissions.length !== dto.permissionIds.length) {
-      throw new BadRequestException('Permissões inválidas');
-    }
-
-    const plan = this.planRepo.create({
-      name: dto.name,
-      isSystem: dto.isSystem ?? false,
-      permissions,
-    });
-
-    return this.planRepo.save(plan);
+  if (permissions.length !== dto.permissionIds.length) {
+    throw new BadRequestException('Permissões inválidas');
   }
+
+  const plan = this.planRepo.create({
+    name: dto.name,
+    isSystem: dto.isSystem ?? false,
+    permissions,
+  });
+
+  return this.planRepo.save(plan);
+}
 
   async update(id: number, dto: UpdatePlanDto): Promise<Plan> {
     const plan = await this.findOne(id);
@@ -77,5 +83,28 @@ export class PlanService {
     }
 
     await this.planRepo.remove(plan);
+  }
+
+  async assignPlanToUser(userId: string, planId: number): Promise<void> {
+    const user = await this.userRepo.findOne({
+      where: { uid: userId },
+      relations: ['plan'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    const plan = await this.planRepo.findOne({
+      where: { id: planId },
+    });
+
+    if (!plan) {
+      throw new NotFoundException('Plano não encontrado');
+    }
+
+    user.plan = plan;
+
+    await this.userRepo.save(user);
   }
 }

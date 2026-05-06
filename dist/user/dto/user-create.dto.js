@@ -9,36 +9,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateCompanyDto = void 0;
+exports.CreateUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-class UpdateCompanyDto {
-    name;
-    domain;
-    logoUrl;
-    planId;
+class CreateUserDto {
+    username;
+    email;
+    password;
+    companyId;
+    permissionIds;
 }
-exports.UpdateCompanyDto = UpdateCompanyDto;
+exports.CreateUserDto = CreateUserDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Empresa Atualizada' }),
+    (0, swagger_1.ApiProperty)({ example: 'Lucas' }),
     __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "name", void 0);
+], CreateUserDto.prototype, "username", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'empresa-nova' }),
+    (0, swagger_1.ApiProperty)({ example: 'lucas@email.com' }),
     __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "domain", void 0);
+], CreateUserDto.prototype, "email", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: '123456' }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "password", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'https://site.com/logo.png',
         required: false,
-    }),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "logoUrl", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: 2,
-        required: false,
-        description: 'ID do plano da empresa',
+        example: 1,
+        description: 'ID da empresa',
     }),
     __metadata("design:type", Number)
-], UpdateCompanyDto.prototype, "planId", void 0);
-//# sourceMappingURL=update-company.dto.js.map
+], CreateUserDto.prototype, "companyId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: [1, 2, 3],
+        description: 'IDs das permissões do plano do operador',
+    }),
+    __metadata("design:type", Array)
+], CreateUserDto.prototype, "permissionIds", void 0);
+//# sourceMappingURL=user-create.dto.js.map

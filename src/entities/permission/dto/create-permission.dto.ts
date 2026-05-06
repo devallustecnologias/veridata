@@ -11,4 +11,12 @@ export class CreatePermissionDto {
     example: 'Consulta CPF',
   })
   name!: string;
+
+   @ApiProperty({
+    example: 5,
+    description: 'Quantidade de créditos consumidos ao usar essa permissão',
+    required: false,
+    default: 0,
+  })
+  creditCost?: number;
 }

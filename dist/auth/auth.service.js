@@ -20,11 +20,9 @@ const bcrypt = require("bcrypt");
 const typeorm_2 = require("typeorm");
 const uuid_1 = require("uuid");
 const user_entity_1 = require("../entities/user/user.entity");
-const google_auth_library_1 = require("google-auth-library");
 let AuthService = class AuthService {
     jwtService;
     userRepository;
-    googleClient = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     constructor(jwtService, userRepository) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -49,9 +47,6 @@ let AuthService = class AuthService {
         }
         catch (err) {
             console.error('Erro ao salvar o usuário:', err);
-            if (err.code === '23505') {
-                throw new common_1.InternalServerErrorException('Email já cadastrado.');
-            }
             throw new common_1.InternalServerErrorException('Erro ao registrar o usuário.');
         }
         return userCreate;
@@ -89,42 +84,6 @@ let AuthService = class AuthService {
             console.error('Erro ao gerar token:', error);
             throw new common_1.InternalServerErrorException('Erro ao realizar o login.');
         }
-    }
-    async googleLogin(credential) {
-        let ticket;
-        try {
-            ticket = await this.googleClient.verifyIdToken({
-                idToken: credential,
-                audience: "76258390090-0blp9d4bhj7d65b6ugbmhdh72mtivgug.apps.googleusercontent.com",
-            });
-        }
-        catch (err) {
-            console.error('Erro ao verificar token do Google:', err);
-            throw new common_1.InternalServerErrorException('Token inválido.');
-        }
-        const payload = ticket.getPayload();
-        const { email, name, picture } = payload;
-        if (!email) {
-            throw new common_1.InternalServerErrorException('Email não encontrado no Google.');
-        }
-        let user = await this.userRepository.findOne({ where: { email } });
-        if (!user) {
-            user = this.userRepository.create({
-                email,
-                username: name,
-                uid: (0, uuid_1.v4)(),
-                password: (0, uuid_1.v4)(),
-            });
-            try {
-                user = await this.userRepository.save(user);
-            }
-            catch (err) {
-                console.error('Erro ao criar usuário Google:', err);
-                throw new common_1.InternalServerErrorException('Erro ao registrar usuário Google.');
-            }
-        }
-        const payloadToSign = { sub: user.uid, username: user.username };
-        return { access_token: this.jwtService.sign(payloadToSign), uid: user.uid };
     }
 };
 exports.AuthService = AuthService;

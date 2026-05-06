@@ -10,4 +10,5 @@ export declare class CompanyController {
     create(dto: CreateCompanyDto): Promise<Company>;
     update(id: number, dto: UpdateCompanyDto): Promise<Company>;
     remove(id: number): Promise<void>;
+    getCompanyPermissions(id: number): Promise<import("../entities/permission/permission.entity").Permission[]>;
 }

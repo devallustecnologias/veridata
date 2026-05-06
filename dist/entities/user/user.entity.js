@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const company_entity_1 = require("../../company/company.entity");
 const typeorm_1 = require("typeorm");
+const plan_entity_1 = require("../plan/plan.entity");
 var UserRole;
 (function (UserRole) {
     UserRole["MASTER"] = "master";
@@ -27,6 +28,7 @@ let User = class User {
     password;
     role;
     company;
+    plan;
     createdAt;
 };
 exports.User = User;
@@ -63,8 +65,13 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => company_entity_1.Company, company => company.users, { nullable: true }),
     (0, typeorm_1.JoinColumn)({ name: 'company_id' }),
-    __metadata("design:type", company_entity_1.Company)
+    __metadata("design:type", Object)
 ], User.prototype, "company", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => plan_entity_1.Plan, { nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'plan_id' }),
+    __metadata("design:type", Object)
+], User.prototype, "plan", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),

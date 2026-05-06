@@ -16,7 +16,7 @@ import { Company } from './company.entity';
 @ApiTags('Companies')
 @Controller('companies')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(private readonly companyService: CompanyService) { }
 
   @Get()
   @ApiOperation({ summary: 'Listar empresas' })
@@ -77,5 +77,15 @@ export class CompanyController {
   @ApiOperation({ summary: 'Remover empresa' })
   remove(@Param('id') id: number) {
     return this.companyService.remove(Number(id));
+  }
+
+  @Get(':id/permissions')
+  @ApiOperation({ summary: 'Listar permissões da empresa' })
+  @ApiResponse({
+    status: 200,
+    description: 'Permissões da empresa',
+  })
+  getCompanyPermissions(@Param('id') id: number) {
+    return this.companyService.getPermissions(Number(id));
   }
 }

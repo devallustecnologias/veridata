@@ -16,6 +16,7 @@ let Permission = class Permission {
     id;
     key;
     name;
+    creditCost;
 };
 exports.Permission = Permission;
 __decorate([
@@ -33,6 +34,11 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Permission.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
+    __metadata("design:type", Number)
+], Permission.prototype, "creditCost", void 0);
 exports.Permission = Permission = __decorate([
     (0, typeorm_1.Entity)()
 ], Permission);

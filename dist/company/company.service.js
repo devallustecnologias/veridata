@@ -17,20 +17,23 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const company_entity_1 = require("./company.entity");
 const typeorm_2 = require("typeorm");
+const plan_entity_1 = require("../entities/plan/plan.entity");
 let CompanyService = class CompanyService {
     companyRepo;
-    constructor(companyRepo) {
+    planRepo;
+    constructor(companyRepo, planRepo) {
         this.companyRepo = companyRepo;
+        this.planRepo = planRepo;
     }
     async findAll() {
         return this.companyRepo.find({
-            relations: ['users'],
+            relations: ['users', 'plan'],
         });
     }
     async findOne(id) {
         const company = await this.companyRepo.findOne({
             where: { id },
-            relations: ['users'],
+            relations: ['users', 'plan'],
         });
         if (!company) {
             throw new common_1.NotFoundException('Empresa não encontrada');
@@ -44,7 +47,13 @@ let CompanyService = class CompanyService {
         if (exists) {
             throw new common_1.BadRequestException('Domínio já está em uso');
         }
-        const company = this.companyRepo.create(dto);
+        const plan = dto.planId
+            ? await this.planRepo.findOne({ where: { id: dto.planId } })
+            : null;
+        const company = this.companyRepo.create({
+            ...dto,
+            plan,
+        });
         return this.companyRepo.save(company);
     }
     async update(id, dto) {
@@ -67,11 +76,27 @@ let CompanyService = class CompanyService {
         }
         await this.companyRepo.remove(company);
     }
+    async getPermissions(companyId) {
+        const company = await this.companyRepo.findOne({
+            where: { id: companyId },
+            relations: {
+                plan: {
+                    permissions: true,
+                },
+            },
+        });
+        if (!company) {
+            throw new common_1.NotFoundException('Empresa não encontrada');
+        }
+        return company.plan?.permissions ?? [];
+    }
 };
 exports.CompanyService = CompanyService;
 exports.CompanyService = CompanyService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(company_entity_1.Company)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(plan_entity_1.Plan)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], CompanyService);
 //# sourceMappingURL=company.service.js.map

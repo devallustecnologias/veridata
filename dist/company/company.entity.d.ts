@@ -1,3 +1,4 @@
+import { Plan } from 'src/entities/plan/plan.entity';
 import { User } from 'src/entities/user/user.entity';
 export declare class Company {
     id: number;
@@ -5,4 +6,5 @@ export declare class Company {
     domain: string;
     logoUrl?: string;
     users: User[];
+    plan?: Plan | null;
 }

@@ -10,4 +10,5 @@ export declare class PlanController {
     create(dto: CreatePlanDto): Promise<Plan>;
     update(id: number, dto: UpdatePlanDto): Promise<Plan>;
     remove(id: number): Promise<void>;
+    assignPlanToUser(userId: string, planId: number): Promise<void>;
 }

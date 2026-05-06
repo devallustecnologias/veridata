@@ -10,8 +10,6 @@ import { OAuth2Client } from 'google-auth-library';
 @Injectable()
 export class AuthService {
 
-    private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
   constructor(
     private jwtService: JwtService,
     @InjectRepository(User) private userRepository: Repository<User>,
@@ -43,9 +41,6 @@ export class AuthService {
       userCreate = await this.userRepository.save(user);
     } catch (err) {
       console.error('Erro ao salvar o usuário:', err);
-      if (err.code === '23505') {
-        throw new InternalServerErrorException('Email já cadastrado.');
-      }
       throw new InternalServerErrorException('Erro ao registrar o usuário.');
     }
 
@@ -86,49 +81,5 @@ export class AuthService {
       console.error('Erro ao gerar token:', error);
       throw new InternalServerErrorException('Erro ao realizar o login.');
     }
-  }
-
-    async googleLogin(credential: string) {
-    let ticket;
-    try {
-      ticket = await this.googleClient.verifyIdToken({
-        idToken: credential,
-        audience: "76258390090-0blp9d4bhj7d65b6ugbmhdh72mtivgug.apps.googleusercontent.com",
-      });
-    } catch (err) {
-      console.error('Erro ao verificar token do Google:', err);
-      throw new InternalServerErrorException('Token inválido.');
-    }
-
-    const payload = ticket.getPayload();
-    const { email, name, picture } = payload;
-
-    if (!email) {
-      throw new InternalServerErrorException('Email não encontrado no Google.');
-    }
-
-    // Verifica se o usuário já existe
-    let user = await this.userRepository.findOne({ where: { email } });
-
-    if (!user) {
-      // Cria usuário novo
-      user = this.userRepository.create({
-        email,
-        username: name,
-        // profile: picture,
-        uid: uuidv4(),
-        password: uuidv4(), // Sem senha
-      });
-
-      try {
-        user = await this.userRepository.save(user);
-      } catch (err) {
-        console.error('Erro ao criar usuário Google:', err);
-        throw new InternalServerErrorException('Erro ao registrar usuário Google.');
-      }
-    }
-    const payloadToSign = { sub: user.uid, username: user.username };
-    // Gera JWT interno da sua aplicação
-    return { access_token: this.jwtService.sign(payloadToSign), uid: user.uid };
   }
 }

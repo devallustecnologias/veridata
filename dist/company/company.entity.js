@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Company = void 0;
+const plan_entity_1 = require("../entities/plan/plan.entity");
 const user_entity_1 = require("../entities/user/user.entity");
 const typeorm_1 = require("typeorm");
 let Company = class Company {
@@ -18,6 +19,7 @@ let Company = class Company {
     domain;
     logoUrl;
     users;
+    plan;
 };
 exports.Company = Company;
 __decorate([
@@ -40,6 +42,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => user_entity_1.User, user => user.company),
     __metadata("design:type", Array)
 ], Company.prototype, "users", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => plan_entity_1.Plan, { nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'plan_id' }),
+    __metadata("design:type", Object)
+], Company.prototype, "plan", void 0);
 exports.Company = Company = __decorate([
     (0, typeorm_1.Entity)('company')
 ], Company);
